@@ -1,9 +1,13 @@
 package com.bezkoder.springjwt.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name="bodyParts")
+@Table(name = "bodyParts")
 public class BodyPart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,6 +15,10 @@ public class BodyPart {
 
     @Column(nullable = false, unique = true)
     private String name;
+
+    @ManyToMany(mappedBy = "bodyParts", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<User> users = new HashSet<>(); // Ignorer cette relation
 
     public BodyPart() {}
 
@@ -32,5 +40,13 @@ public class BodyPart {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 }

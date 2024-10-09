@@ -1,61 +1,61 @@
 package com.bezkoder.springjwt.controllers;
 
+import com.bezkoder.springjwt.models.BodyPart;
 import com.bezkoder.springjwt.models.User;
+import com.bezkoder.springjwt.payload.request.BodyPartsRequest;
 import com.bezkoder.springjwt.payload.request.UpdateUserRequest;
 import com.bezkoder.springjwt.payload.response.MessageResponse;
-import com.bezkoder.springjwt.repository.UserRepository;
+import com.bezkoder.springjwt.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserService userService;
 
     // Endpoint to partially update user details
     @PostMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
-        // Find the user by ID
-        Optional<User> userData = userRepository.findById(id);
+        Optional<User> userData = userService.updateUser(id, updateUserRequest);
 
         if (userData.isPresent()) {
-            User user = userData.get();
-
-            // Update only fields that are provided in the request
-            if (updateUserRequest.getFirstName() != null) {
-                user.setFirstName(updateUserRequest.getFirstName());
-            }
-            if (updateUserRequest.getLastName() != null) {
-                user.setLastName(updateUserRequest.getLastName());
-            }
-            if (updateUserRequest.getEmail() != null) {
-                user.setEmail(updateUserRequest.getEmail());
-            }
-            if (updateUserRequest.getPassword() != null) {
-                user.setPassword(updateUserRequest.getPassword());
-            }
-            if (updateUserRequest.getBirthDate() != null) {
-                user.setBirthDate(updateUserRequest.getBirthDate());
-            }
-            if (updateUserRequest.getWeight() != null) {
-                user.setWeight(updateUserRequest.getWeight());
-            }
-            if (updateUserRequest.getHeight() != null) {
-                user.setHeight(updateUserRequest.getHeight());
-            }
-
-            // Save the updated user
-            userRepository.save(user);
             return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
         } else {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: User not found!"));
         }
+    }
+
+    // Endpoint to get all BodyParts of a user
+    @GetMapping("/{userId}/bodyparts")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<Set<BodyPart>> getBodyPartsForUser(@PathVariable Long userId) {
+        Set<BodyPart> bodyParts = userService.getBodyPartsByUserId(userId);
+        return ResponseEntity.ok(bodyParts);
+    }
+
+    // Endpoint to add BodyParts to a user
+    @PostMapping("/{id}/bodyparts")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<?> addBodyPartsToUser(@PathVariable Long id, @RequestBody BodyPartsRequest request) {
+        userService.addBodyPartsToUser(id, request.getBodyPartIds());
+        return ResponseEntity.ok(new MessageResponse("Body parts added successfully!"));
+    }
+
+
+    // Endpoint to remove BodyParts from a user
+    @DeleteMapping("/{userId}/bodyparts")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<?> removeBodyPartsFromUser(@PathVariable Long userId, @RequestBody BodyPartsRequest request) {
+        userService.removeBodyPartsFromUser(userId, request.getBodyPartIds());
+        return ResponseEntity.ok(new MessageResponse("BodyParts removed successfully!"));
     }
 }

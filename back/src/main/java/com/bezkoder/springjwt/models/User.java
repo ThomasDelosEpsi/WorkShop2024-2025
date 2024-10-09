@@ -10,12 +10,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = "users", 
-    uniqueConstraints = { 
-      @UniqueConstraint(columnNames = "username"),
-      @UniqueConstraint(columnNames = "email") 
-    })
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
 public class User {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -34,70 +35,9 @@ public class User {
   private String password;
 
   private String firstName;
-
   private String lastName;
-
   private Date birthDate;
-
   private double weight;
-
-  private double height;
-
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(  name = "user_roles", 
-        joinColumns = @JoinColumn(name = "user_id"), 
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private Set<Role> roles = new HashSet<>();
-
-  public User() {
-  }
-
-  public User(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
-  }
-
-  public Long getId() {
-
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public Set<Role> getRoles() {
-    return roles;
-  }
-
-  public void setRoles(Set<Role> roles) {
-    this.roles = roles;
-  }
 
   public String getFirstName() {
     return firstName;
@@ -137,5 +77,82 @@ public class User {
 
   public void setHeight(double height) {
     this.height = height;
+  }
+
+  private double height;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "user_roles",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private Set<Role> roles = new HashSet<>();
+
+  // Ajoutez ici la relation Many-to-Many avec BodyPart
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "user_body_parts", // Le nom de la table de jointure
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "body_part_id")
+  )
+  private Set<BodyPart> bodyParts = new HashSet<>();
+
+  public User() {}
+
+  public User(String username, String email, String password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
+
+  // Getters et Setters
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
+  public Set<BodyPart> getBodyParts() {
+    return bodyParts;
+  }
+
+  public void setBodyParts(Set<BodyPart> bodyParts) {
+    this.bodyParts = bodyParts;
   }
 }
