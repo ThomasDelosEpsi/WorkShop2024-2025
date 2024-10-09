@@ -182,7 +182,7 @@ class _SubscribePageState extends State<SubscribePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => IntroductionPage(),
+                              builder: (context) => ConnexionPage(),
                             ),
                           );
                         }
