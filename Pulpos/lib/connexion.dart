@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'HomePage.dart'; // Assurez-vous que le chemin d'importation est correct
 
 class ConnexionPage extends StatefulWidget {
+  const ConnexionPage({super.key});
+
   @override
   _ConnexionPageState createState() => _ConnexionPageState();
 }
@@ -23,7 +25,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8245E6), // Couleur de fond violet
+      backgroundColor: const Color(0xFF8245E6), // Couleur de fond violet
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -48,19 +50,19 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     controller: _emailController, // Ajout du contrôleur
                     decoration: InputDecoration(
                       labelText: 'Adresse mail',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
                       hintText: 'Adresse mail',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Champ de mot de passe avec l'icône de visibilité
                   TextFormField(
@@ -68,13 +70,13 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     obscureText: !_isPasswordVisible, // Masquer ou afficher le texte
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: const TextStyle(color: Colors.white),
                       hintText: 'Mot de passe',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
-                      focusedBorder: OutlineInputBorder(
+                      focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
-                      enabledBorder: OutlineInputBorder(
+                      enabledBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
                       suffixIcon: IconButton(
@@ -89,9 +91,9 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         },
                       ),
                     ),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Bouton Connexion
                   SizedBox(
@@ -102,7 +104,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: () {
                         // Récupérer les valeurs des champs
@@ -113,7 +115,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(), // Pas d'arguments ici
+                            builder: (context) => const HomePage(), // Pas d'arguments ici
                           ),
                         );
 
@@ -121,14 +123,14 @@ class _ConnexionPageState extends State<ConnexionPage> {
                       child: Text(
                         "Connexion", // Changement du texte ici
                         style: GoogleFonts.roboto(
-                          color: Color(0xFF8245E6),
+                          color: const Color(0xFF8245E6),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
 
                   // Texte de bas de page avec lien
                   TextButton(

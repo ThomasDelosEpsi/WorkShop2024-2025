@@ -4,7 +4,7 @@ import 'HomePage.dart'; // Import the Program model
 class ProgramDetailPage extends StatefulWidget {
   final Program program;
 
-  ProgramDetailPage({required this.program});
+  const ProgramDetailPage({super.key, required this.program});
 
   @override
   _ProgramDetailPageState createState() => _ProgramDetailPageState();
@@ -32,7 +32,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                         width: double.infinity,
                         height: 250,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.vertical(
+                          borderRadius: const BorderRadius.vertical(
                             bottom: Radius.circular(15),
                           ),
                           image: DecorationImage(
@@ -50,7 +50,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                                 Colors.transparent,
                               ],
                             ),
-                            borderRadius: BorderRadius.vertical(
+                            borderRadius: const BorderRadius.vertical(
                               bottom: Radius.circular(15),
                             ),
                           ),
@@ -60,7 +60,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                         top: 40,
                         left: 16,
                         child: IconButton(
-                          icon: Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -88,7 +88,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                         bottom: 16,
                         left: 16,
                         child: Container(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.black54,
                             borderRadius: BorderRadius.circular(8),
@@ -98,20 +98,20 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                             children: [
                               Text(
                                 widget.program.title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  Icon(Icons.calendar_today, size: 16, color: Colors.white70),
-                                  SizedBox(width: 4),
+                                  const Icon(Icons.calendar_today, size: 16, color: Colors.white70),
+                                  const SizedBox(width: 4),
                                   Text(
                                     widget.program.subtitle,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white70,
                                       fontSize: 14,
                                     ),
@@ -124,9 +124,9 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  const SizedBox(height: 16),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
                         Text(
@@ -147,25 +147,25 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.access_time, size: 18, color: Colors.grey),
-                              SizedBox(width: 4),
+                              const Icon(Icons.access_time, size: 18, color: Colors.grey),
+                              const SizedBox(width: 4),
                               Text(
                                 "${widget.program.sessions} séance",
-                                style: TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 14),
                               ),
                             ],
                           ),
@@ -177,7 +177,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                             });
                           },
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: Colors.grey[200],
                               borderRadius: BorderRadius.circular(10),
@@ -189,10 +189,10 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                                   size: 18,
                                   color: isStarred ? Colors.green : Colors.grey,
                                 ),
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
                                 Text(
                                   "${widget.program.rating}",
-                                  style: TextStyle(fontSize: 14),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ],
                             ),
@@ -201,7 +201,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // Scrollable text
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -210,7 +210,7 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                       style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -228,9 +228,9 @@ class _ProgramDetailPageState extends State<ProgramDetailPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              child: Text(
+              child: const Text(
                 "Commencer maintenant",
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),

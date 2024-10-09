@@ -3,10 +3,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'connexion.dart'; // Import du fichier connexion.dart
 
 class IntroductionPage extends StatelessWidget {
+  const IntroductionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF8245E6),
+      backgroundColor: const Color(0xFF8245E6),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -18,19 +20,19 @@ class IntroductionPage extends StatelessWidget {
                 child: LinearProgressIndicator(
                   value: 0.1,
                   backgroundColor: Colors.white.withOpacity(0.3),
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF11FD91)),
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF11FD91)),
                   minHeight: 6,
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Image.asset(
               '../assets/logopulpos.png',
               width: 100,
               height: 100,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Column(
               children: [
                 Row(
@@ -47,14 +49,14 @@ class IntroductionPage extends StatelessWidget {
                     Text(
                       'pulpos',
                       style: GoogleFonts.roboto(
-                        color: Color(0xFF11FD91),
+                        color: const Color(0xFF11FD91),
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: RichText(
@@ -65,7 +67,7 @@ class IntroductionPage extends StatelessWidget {
                         fontSize: 16,
                         height: 1.5,
                       ),
-                      children: <TextSpan>[
+                      children: const <TextSpan>[
                         TextSpan(text: "L’application de "),
                         TextSpan(
                           text: "Kinésithérapeute ",
@@ -82,7 +84,7 @@ class IntroductionPage extends StatelessWidget {
                 ),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: SizedBox(
@@ -93,32 +95,32 @@ class IntroductionPage extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: () {
                     // Naviguer vers la ConnexionPage
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ConnexionPage()),
+                      MaterialPageRoute(builder: (context) => const ConnexionPage()),
                     );
                   },
                   child: Text(
                     "Continuer",
                     style: GoogleFonts.roboto(
-                      color: Color(0xFF8245E6),
+                      color: const Color(0xFF8245E6),
                       fontSize: 18,
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Image.asset(
               '../assets/logoWhite.png',
               width: 100,
               height: 100,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),

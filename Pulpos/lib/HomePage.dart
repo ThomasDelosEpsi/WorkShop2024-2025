@@ -3,6 +3,8 @@ import 'camera.dart'; // Import the CameraPage
 import 'program.dart'; // Import the ProgramDetailPage
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -35,7 +37,7 @@ class _HomePageState extends State<HomePage> {
       // Navigate to CameraPage if the camera icon is clicked
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => CameraPage()),
+        MaterialPageRoute(builder: (context) => const CameraPage()),
       );
     } else {
       setState(() {
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RichText(
-                    text: TextSpan(
+                    text: const TextSpan(
                       children: [
                         TextSpan(
                           text: "Hey, Gus ",
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: Color(0xFF10FD91),
+                    backgroundColor: const Color(0xFF10FD91),
                     child: IconButton(
                       icon: Image.asset(
                         "../assets/logopulpos.png",
@@ -104,9 +106,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
+                        padding: EdgeInsets.only(left: 20.0),
                         child: TextField(
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -115,22 +117,22 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                    VerticalDivider(
+                    const VerticalDivider(
                       color: Colors.grey,
                       width: 1,
                       thickness: 1,
                     ),
                     IconButton(
-                      icon: Icon(Icons.filter_list),
+                      icon: const Icon(Icons.filter_list),
                       onPressed: () {},
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            const SizedBox(height: 16),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -151,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             // Filter buttons remain unchanged
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -168,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: FilterButton(
                       label: "Rapide",
@@ -180,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Expanded(
                     child: FilterButton(
                       label: "Dernier",
@@ -195,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             // Display the programs dynamically
             Expanded(
               child: ListView.builder(
@@ -232,7 +234,7 @@ class _HomePageState extends State<HomePage> {
         unselectedItemColor: Colors.grey,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: ''),
@@ -249,7 +251,7 @@ class FilterButton extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  FilterButton({required this.label, required this.isSelected, required this.onTap});
+  const FilterButton({super.key, required this.label, required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +300,7 @@ class Program {
 class ProgramCard extends StatefulWidget {
   final Program program;
 
-  ProgramCard({required this.program});
+  const ProgramCard({super.key, required this.program});
 
   @override
   _ProgramCardState createState() => _ProgramCardState();
@@ -312,7 +314,7 @@ class _ProgramCardState extends State<ProgramCard> {
   Widget build(BuildContext context) {
     return Container(
       width: 270,
-      margin: EdgeInsets.only(right: 16.0),
+      margin: const EdgeInsets.only(right: 16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         image: DecorationImage(
@@ -326,8 +328,8 @@ class _ProgramCardState extends State<ProgramCard> {
             alignment: Alignment.bottomLeft,
             child: Container(
               width: double.infinity,
-              margin: EdgeInsets.all(8.0),
-              padding: EdgeInsets.all(10.0),
+              margin: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: Colors.black54,
                 borderRadius: BorderRadius.circular(15),
@@ -338,20 +340,20 @@ class _ProgramCardState extends State<ProgramCard> {
                 children: [
                   Text(
                     widget.program.title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     widget.program.subtitle,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white70,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -366,10 +368,10 @@ class _ProgramCardState extends State<ProgramCard> {
                           color: isRated ? Colors.yellow : Colors.white,
                         ),
                       ),
-                      SizedBox(width: 4),
+                      const SizedBox(width: 4),
                       Text(
                         "${widget.program.rating}",
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
