@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // Pour afficher les SVG
-import 'introductionPage.dart'; // Importez le fichier contenant la page d'accueil
+import 'connexion.dart';// Importez le fichier contenant la page d'accueil
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // Naviguer vers HomePage et remplacer l'écran actuel
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const IntroductionPage()),
+        MaterialPageRoute(builder: (context) => const ConnexionPage()),
       );
     });
   }
