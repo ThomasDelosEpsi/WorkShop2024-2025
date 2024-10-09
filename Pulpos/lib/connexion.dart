@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http; // Importation de la bibliothèque http
-import 'dart:convert'; // Importation pour décoder le JSON
-import 'HomePage.dart'; // Assurez-vous que le chemin d'importation est correct
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'HomePage.dart';
+import 'subscribe.dart'; // Import SubscribePage
 
 class ConnexionPage extends StatefulWidget {
   const ConnexionPage({super.key});
@@ -12,53 +13,45 @@ class ConnexionPage extends StatefulWidget {
 }
 
 class _ConnexionPageState extends State<ConnexionPage> {
-  bool _isPasswordVisible = false; // Etat initial de visibilité du mot de passe
-  final TextEditingController _emailController = TextEditingController(); // Contrôleur pour l'adresse e-mail
-  final TextEditingController _passwordController = TextEditingController(); // Contrôleur pour le mot de passe
+  bool _isPasswordVisible = false;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    // Libérer les contrôleurs lorsque la page est supprimée
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
-    // Récupérer les valeurs des champs
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    // L'URL de l'API
     final url = Uri.parse('http://localhost:8080/api/auth/signin');
 
-    // Effectuer la requête POST
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'username': email, // Utilisez 'username' ou 'email' selon votre API
+          'username': email,
           'password': password,
         }),
       );
 
-      // Vérifier le statut de la réponse
       if (response.statusCode == 200) {
-        // Connexion réussie
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(), // Naviguer vers HomePage
+            builder: (context) => HomePage(),
           ),
         );
       } else {
-        // Gérer les erreurs de connexion
         final responseBody = json.decode(response.body);
-        _showErrorDialog(responseBody['message'] ?? 'Erreur inconnue'); // Afficher un message d'erreur
+        _showErrorDialog(responseBody['message'] ?? 'Erreur inconnue');
       }
     } catch (error) {
-      // Gérer les exceptions
       _showErrorDialog('Erreur de connexion : $error');
     }
   }
@@ -84,12 +77,11 @@ class _ConnexionPageState extends State<ConnexionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF8245E6), // Couleur de fond violet
+      backgroundColor: const Color(0xFF8245E6),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Logo en haut de page
             Padding(
               padding: const EdgeInsets.only(top: 32.0),
               child: Image.asset(
@@ -98,45 +90,43 @@ class _ConnexionPageState extends State<ConnexionPage> {
                 height: 120,
               ),
             ),
-            // Centre de la page avec champs de texte et bouton
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Champ d'adresse mail
+                  // Email field
                   TextFormField(
-                    controller: _emailController, // Ajout du contrôleur
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Adresse mail',
                       labelStyle: const TextStyle(color: Colors.white),
                       hintText: 'Adresse mail',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                        borderSide: BorderSide(color: Color(0xFF11FD91)), // Green when focused
                       ),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                        borderSide: BorderSide(color: Colors.white), // White when not focused
                       ),
                     ),
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
-
-                  // Champ de mot de passe avec l'icône de visibilité
+                  // Password field
                   TextFormField(
-                    controller: _passwordController, // Ajout du contrôleur
-                    obscureText: !_isPasswordVisible, // Masquer ou afficher le texte
+                    controller: _passwordController,
+                    obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
                       labelStyle: const TextStyle(color: Colors.white),
                       hintText: 'Mot de passe',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                        borderSide: BorderSide(color: Color(0xFF11FD91)), // Green when focused
                       ),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                        borderSide: BorderSide(color: Colors.white), // White when not focused
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -145,7 +135,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _isPasswordVisible = !_isPasswordVisible; // Inverser l'état
+                            _isPasswordVisible = !_isPasswordVisible;
                           });
                         },
                       ),
@@ -153,8 +143,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 24),
-
-                  // Bouton Connexion
+                  // Login button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -165,9 +154,9 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      onPressed: _login, // Appeler la fonction de connexion
+                      onPressed: _login,
                       child: Text(
-                        "Connexion", // Changement du texte ici
+                        "Connexion",
                         style: GoogleFonts.roboto(
                           color: const Color(0xFF8245E6),
                           fontSize: 18,
@@ -177,14 +166,18 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Texte de bas de page avec lien
+                  // Navigate to SubscribePage
                   TextButton(
                     onPressed: () {
-                      // Action pour aller à la page d'inscription
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SubscribePage(),
+                        ),
+                      );
                     },
                     child: Text(
-                      "Je n'ai pas de compte ? Je m'inscris", // Changement du texte ici
+                      "Je n'ai pas de compte ? Je m'inscris",
                       style: GoogleFonts.roboto(
                         color: Colors.white,
                         fontSize: 14,
@@ -194,11 +187,10 @@ class _ConnexionPageState extends State<ConnexionPage> {
                 ],
               ),
             ),
-            // Logo en bas de page
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Image.asset(
-                '../assets/logoWhite.png',
+                '../assets/logopulpos.png',
                 width: 80,
                 height: 80,
               ),
