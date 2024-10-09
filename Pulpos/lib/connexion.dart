@@ -165,24 +165,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-<<<<<<< HEAD
-                      onPressed: () {
-                        // Récupérer les valeurs des champs
-                        String email = _emailController.text;
-                        String password = _passwordController.text;
-
-                        // Naviguer vers HomePage.dart
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(), // Pas d'arguments ici
-                          ),
-                        );
-
-                      },
-=======
                       onPressed: _login, // Appeler la fonction de connexion
->>>>>>> ba144e4c34d4572ccae28ceb1297e03a67cc7f0c
                       child: Text(
                         "Connexion", // Changement du texte ici
                         style: GoogleFonts.roboto(
