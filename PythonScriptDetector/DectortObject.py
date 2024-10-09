@@ -1,123 +1,81 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  ObjectRecognition.py
-#  Description:
-#        Use ModelNet-SSD model to detect objects
-#
-#  www.aranacorp.com
-
-# import packages
-import sys
-from imutils.video import VideoStream
-from imutils.video import FPS
-import numpy as np
-import argparse
-import imutils
-import time
+from flask import Flask, Response
 import cv2
+import numpy as np
+import logging
+import time
+from imutils.video import VideoStream
 
-# Arguments construction
-if len(sys.argv)==1:
-    args={
-    "prototxt":"MobileNetSSD_deploy.prototxt.txt",
-    "model":"MobileNetSSD_deploy.caffemodel",
-    "confidence":0.2,
-    }
-else:
-    #lancement à partir du terminal
-    #python3 ObjectRecognition.py --prototxt MobileNetSSD_deploy.prototxt.txt --model MobileNetSSD_deploy.caffemodel
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-p", "--prototxt", required=True,
-        help="path to Caffe 'deploy' prototxt file")
-    ap.add_argument("-m", "--model", required=True,
-        help="path to Caffe pre-trained model")
-    ap.add_argument("-c", "--confidence", type=float, default=0.2,
-        help="minimum probability to filter weak detections")
-    args = vars(ap.parse_args())
+# Configuration du serveur Flask
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Chargement du modèle de réseau neuronal
+logging.info("Chargement du modèle de réseau neuronal...")
+try:
+    net = cv2.dnn.readNetFromCaffe("MobileNetSSD_deploy.prototxt.txt", "MobileNetSSD_deploy.caffemodel")
+    logging.info("Modèle chargé avec succès.")
+except Exception as e:
+    logging.error(f"Erreur lors du chargement du modèle : {e}")
+    exit(1)
 
-
-# ModelNet SSD Object list init
+# Liste des classes du modèle
 CLASSES = ["arriere-plan", "avion", "velo", "oiseau", "bateau",
-    "bouteille", "autobus", "voiture", "chat", "chaise", "vache", "table",
-    "chien", "cheval", "moto", "personne", "plante en pot", "mouton",
-    "sofa", "train", "moniteur"]
-
+           "bouteille", "autobus", "voiture", "chat", "chaise", "vache", "table",
+           "chien", "cheval", "moto", "personne", "plante en pot", "mouton",
+           "sofa", "train", "moniteur"]
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
-# Load model file
-print("Load Neural Network...")
-net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
+# Initialisation de la caméra
+logging.info("Initialisation de la caméra...")
+vs = VideoStream(src=0).start()
+time.sleep(2.0)  # Délai pour laisser le temps à la caméra de démarrer
 
-if __name__ == '__main__':
-
-    # Camera initialisation
-    print("Start Camera...")
-    vs = VideoStream(src=0, resolution=(1600, 1200)).start()
-    #vs = VideoStream(usePiCamera=True, resolution=(1600, 1200)).start()
-    #vc = cv2.VideoCapture('./img/Splash - 23011.mp4') #from video
-
-    time.sleep(2.0)
-    fps = FPS().start()
-    
-    #Main loop
+def gen():
+    """Génère le flux vidéo avec détection d'objets"""
     while True:
-        # Get video sttream. max width 800 pixels 
+        # Capture une frame de la vidéo
         frame = vs.read()
-        #frame= cv2.imread('./img/two-boats.jpg') #from image file
-        #ret, frame=vc.read() #from video or ip cam
-        frame = imutils.resize(frame, width=800)
+        if frame is None:
+            continue
 
-        # Create blob from image
+        # Prétraitement de l'image pour le modèle
         (h, w) = frame.shape[:2]
         blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 0.007843, (300, 300), 127.5)
-
-        # Feed input to neural network 
+        
+        # Passer le blob dans le réseau
         net.setInput(blob)
         detections = net.forward()
 
-        # Detection loop
+        # Boucle de détection
         for i in np.arange(0, detections.shape[2]):
-            # Compute Object detection probability
             confidence = detections[0, 0, i, 2]
-            
-            # Suppress low probability
-            if confidence > args["confidence"]:
-                # Get index and position of detected object
+            if confidence > 0.2:
                 idx = int(detections[0, 0, i, 1])
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
 
-                # Create box and label
-                label = "{}: {:.2f}%".format(CLASSES[idx],
-                    confidence * 100)
-                cv2.rectangle(frame, (startX, startY), (endX, endY),
-                    COLORS[idx], 2)
+                # Dessine la boîte de délimitation et l'étiquette
+                label = "{}: {:.2f}%".format(CLASSES[idx], confidence * 100)
+                cv2.rectangle(frame, (startX, startY), (endX, endY), COLORS[idx], 2)
                 y = startY - 15 if startY - 15 > 15 else startY + 15
-                cv2.putText(frame, label, (startX, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
-                    
-                # enregistrement de l'image détectée 
-                cv2.imwrite("detection.png", frame)
-                
-                
-        # Show video frame
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
+                cv2.putText(frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
-        # Exit script with letter q
-        if key == ord("q"):
-            break
+                logging.info(f"Objet détecté : {label}")
 
-        # FPS update 
-        fps.update()
+        # Encodage de la frame en JPEG
+        ret, jpeg = cv2.imencode('.jpg', frame)
+        if not ret:
+            continue
 
-    # Stops fps and display info
-    fps.stop()
-    print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-    print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+        # Envoi de la frame
+        yield (b'--frame\r\n'
+               b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
 
-    cv2.destroyAllWindows()
-    vs.stop()
-    #vc.release()
+@app.route('/video_feed')
+def video_feed():
+    """Route pour le flux vidéo"""
+    return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# Démarrage du serveur Flask
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)

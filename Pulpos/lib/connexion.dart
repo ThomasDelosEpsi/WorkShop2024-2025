@@ -1,0 +1,163 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'HomePage.dart'; // Assurez-vous que le chemin d'importation est correct
+
+class ConnexionPage extends StatefulWidget {
+  @override
+  _ConnexionPageState createState() => _ConnexionPageState();
+}
+
+class _ConnexionPageState extends State<ConnexionPage> {
+  bool _isPasswordVisible = false; // Etat initial de visibilité du mot de passe
+  final TextEditingController _emailController = TextEditingController(); // Contrôleur pour l'adresse e-mail
+  final TextEditingController _passwordController = TextEditingController(); // Contrôleur pour le mot de passe
+
+  @override
+  void dispose() {
+    // Libérer les contrôleurs lorsque la page est supprimée
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF8245E6), // Couleur de fond violet
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Logo en haut de page
+            Padding(
+              padding: const EdgeInsets.only(top: 32.0),
+              child: Image.asset(
+                '../assets/logoWhite.png',
+                width: 120,
+                height: 120,
+              ),
+            ),
+            // Centre de la page avec champs de texte et bouton
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Champ d'adresse mail
+                  TextFormField(
+                    controller: _emailController, // Ajout du contrôleur
+                    decoration: InputDecoration(
+                      labelText: 'Adresse mail',
+                      labelStyle: TextStyle(color: Colors.white),
+                      hintText: 'Adresse mail',
+                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Champ de mot de passe avec l'icône de visibilité
+                  TextFormField(
+                    controller: _passwordController, // Ajout du contrôleur
+                    obscureText: !_isPasswordVisible, // Masquer ou afficher le texte
+                    decoration: InputDecoration(
+                      labelText: 'Mot de passe',
+                      labelStyle: TextStyle(color: Colors.white),
+                      hintText: 'Mot de passe',
+                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible; // Inverser l'état
+                          });
+                        },
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 24),
+
+                  // Bouton Connexion
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      onPressed: () {
+                        // Récupérer les valeurs des champs
+                        String email = _emailController.text;
+                        String password = _passwordController.text;
+
+                        // Naviguer vers HomePage.dart
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(), // Pas d'arguments ici
+                          ),
+                        );
+
+                      },
+                      child: Text(
+                        "Connexion", // Changement du texte ici
+                        style: GoogleFonts.roboto(
+                          color: Color(0xFF8245E6),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+
+                  // Texte de bas de page avec lien
+                  TextButton(
+                    onPressed: () {
+                      // Action pour aller à la page d'inscription
+                    },
+                    child: Text(
+                      "Je n'ai pas de compte ? Je m'inscris", // Changement du texte ici
+                      style: GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Logo en bas de page
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Image.asset(
+                '../assets/logoWhite.png',
+                width: 80,
+                height: 80,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
