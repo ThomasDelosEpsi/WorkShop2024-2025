@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http; // Importation de la bibliothèque http
+import 'dart:convert'; // Importation pour décoder le JSON
 import 'HomePage.dart'; // Assurez-vous que le chemin d'importation est correct
 
 class ConnexionPage extends StatefulWidget {
@@ -20,6 +22,63 @@ class _ConnexionPageState extends State<ConnexionPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _login() async {
+    // Récupérer les valeurs des champs
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    // L'URL de l'API
+    final url = Uri.parse('http://localhost:8080/api/auth/signin');
+
+    // Effectuer la requête POST
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'username': email, // Utilisez 'username' ou 'email' selon votre API
+          'password': password,
+        }),
+      );
+
+      // Vérifier le statut de la réponse
+      if (response.statusCode == 200) {
+        // Connexion réussie
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(), // Naviguer vers HomePage
+          ),
+        );
+      } else {
+        // Gérer les erreurs de connexion
+        final responseBody = json.decode(response.body);
+        _showErrorDialog(responseBody['message'] ?? 'Erreur inconnue'); // Afficher un message d'erreur
+      }
+    } catch (error) {
+      // Gérer les exceptions
+      _showErrorDialog('Erreur de connexion : $error');
+    }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Erreur'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -106,6 +165,7 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         ),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
+<<<<<<< HEAD
                       onPressed: () {
                         // Récupérer les valeurs des champs
                         String email = _emailController.text;
@@ -120,6 +180,9 @@ class _ConnexionPageState extends State<ConnexionPage> {
                         );
 
                       },
+=======
+                      onPressed: _login, // Appeler la fonction de connexion
+>>>>>>> ba144e4c34d4572ccae28ceb1297e03a67cc7f0c
                       child: Text(
                         "Connexion", // Changement du texte ici
                         style: GoogleFonts.roboto(
