@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'connexion.dart'; // Import du fichier connexion.dart
+import 'RappelPage.dart';
 
 class IntroductionPage extends StatelessWidget {
   const IntroductionPage({super.key});
@@ -13,26 +13,31 @@ class IntroductionPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Progress bar at the top
             Padding(
               padding: const EdgeInsets.fromLTRB(16.0, 32.0, 16.0, 0.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.6,
-                child: LinearProgressIndicator(
-                  value: 0.1,
-                  backgroundColor: Colors.white.withOpacity(0.3),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF11FD91)),
-                  minHeight: 6,
-                  borderRadius: BorderRadius.circular(25),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.6,
+                  child: LinearProgressIndicator(
+                    value: 0.1,
+                    backgroundColor: Colors.white.withOpacity(0.3),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF11FD91)),
+                    minHeight: 6,
+                  ),
                 ),
               ),
             ),
             const Spacer(),
+            // Logo image
             Image.asset(
               '../assets/logopulpos.png',
               width: 100,
               height: 100,
             ),
             const SizedBox(height: 24),
+            // Welcome text
             Column(
               children: [
                 Row(
@@ -57,6 +62,7 @@ class IntroductionPage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
+                // Description text
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32.0),
                   child: RichText(
@@ -85,6 +91,7 @@ class IntroductionPage extends StatelessWidget {
               ],
             ),
             const Spacer(),
+            // Continue button
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: SizedBox(
@@ -98,10 +105,10 @@ class IntroductionPage extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   onPressed: () {
-                    // Naviguer vers la ConnexionPage
+                    // Navigate to RappelPage
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const ConnexionPage()),
+                      MaterialPageRoute(builder: (context) => RappelPage()),
                     );
                   },
                   child: Text(
@@ -115,6 +122,7 @@ class IntroductionPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            // Bottom logo
             Image.asset(
               '../assets/logoWhite.png',
               width: 100,
