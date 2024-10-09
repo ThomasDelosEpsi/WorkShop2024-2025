@@ -28,8 +28,8 @@ public class UserService {
             if (request.getEmail() != null) user.setEmail(request.getEmail());
             if (request.getPassword() != null) user.setPassword(request.getPassword());
             if (request.getBirthDate() != null) user.setBirthDate(request.getBirthDate());
-            if (request.getWeight() != 0) user.setWeight(request.getWeight());
-            if (request.getHeight() != 0) user.setHeight(request.getHeight());
+            if (request.getWeight() != null) user.setWeight(request.getWeight());
+            if (request.getHeight() != null) user.setHeight(request.getHeight());
             return userRepository.save(user);
         });
     }
@@ -39,12 +39,12 @@ public class UserService {
         return user.getBodyParts();
     }
 
-    public void addBodyPartsToUser(Long userId, Set<Integer> bodyPartIds) {
+    public void addBodyPartsToUser(Long userId, Set<Long> bodyPartIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Set<BodyPart> bodyParts = new HashSet<>();
-        for (Integer id : bodyPartIds) {
+        for (Long id : bodyPartIds) {
             BodyPart bodyPart = bodyPartRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("BodyPart not found with id: " + id));
             bodyParts.add(bodyPart);
@@ -54,12 +54,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void removeBodyPartsFromUser(Long userId, Set<Integer> bodyPartIds) {
+    public void removeBodyPartsFromUser(Long userId, Set<Long> bodyPartIds) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Set<BodyPart> bodyPartsToRemove = new HashSet<>();
-        for (Integer id : bodyPartIds) {
+        for (Long id : bodyPartIds) {
             BodyPart bodyPart = bodyPartRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("BodyPart not found with id: " + id));
             bodyPartsToRemove.add(bodyPart);

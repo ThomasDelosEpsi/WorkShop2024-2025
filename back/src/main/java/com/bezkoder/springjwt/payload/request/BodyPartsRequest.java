@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotNull;
 public class BodyPartsRequest {
 
     @NotNull
-    private Set<Integer> bodyPartIds;
+    private Set<Long> bodyPartIds;
 
-    public Set<Integer> getBodyPartIds() {
+    public Set<Long> getBodyPartIds() {
         return bodyPartIds;
     }
 
-    public void setBodyPartIds(Set<Integer> bodyPartIds) {
+    public void setBodyPartIds(Set<Long> bodyPartIds) {
         this.bodyPartIds = bodyPartIds;
     }
 }

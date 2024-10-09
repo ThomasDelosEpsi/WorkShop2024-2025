@@ -34,7 +34,7 @@ public class BodyPartController {
     // Récupérer un bodyPart par ID
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('KINE') or hasRole('ADMIN')")
-    public ResponseEntity<BodyPart> getBodyPartById(@PathVariable Integer id) {
+    public ResponseEntity<BodyPart> getBodyPartById(@PathVariable Long id) {
         BodyPart bodyPart = bodyPartService.getBodyPartById(id)
                 .orElseThrow(() -> new RuntimeException("BodyPart not found with id " + id));
         return ResponseEntity.ok(bodyPart);
@@ -43,7 +43,7 @@ public class BodyPartController {
     // Mettre à jour un bodyPart
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BodyPart> updateBodyPart(@PathVariable Integer id, @RequestBody BodyPart bodyPartDetails) {
+    public ResponseEntity<BodyPart> updateBodyPart(@PathVariable Long id, @RequestBody BodyPart bodyPartDetails) {
         BodyPart updatedBodyPart = bodyPartService.updateBodyPart(id, bodyPartDetails);
         return ResponseEntity.ok(updatedBodyPart);
     }
@@ -51,7 +51,7 @@ public class BodyPartController {
     // Supprimer un bodyPart
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteBodyPart(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteBodyPart(@PathVariable Long id) {
         bodyPartService.deleteBodyPart(id);
         return ResponseEntity.noContent().build();
     }

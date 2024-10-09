@@ -25,12 +25,12 @@ public class BodyPartService {
     }
 
     // Récupérer un bodyPart par ID
-    public Optional<BodyPart> getBodyPartById(Integer id) {
+    public Optional<BodyPart> getBodyPartById(Long id) {
         return bodyPartRepository.findById(id);
     }
 
     // Mettre à jour un bodyPart
-    public BodyPart updateBodyPart(Integer id, BodyPart bodyPartDetails) {
+    public BodyPart updateBodyPart(Long id, BodyPart bodyPartDetails) {
         BodyPart bodyPart = bodyPartRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BodyPart not found with id " + id));
 
@@ -39,7 +39,7 @@ public class BodyPartService {
     }
 
     // Supprimer un bodyPart
-    public void deleteBodyPart(Integer id) {
+    public void deleteBodyPart(Long id) {
         BodyPart bodyPart = bodyPartRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("BodyPart not found with id " + id));
         bodyPartRepository.delete(bodyPart);
