@@ -19,7 +19,7 @@ public class UserController {
     UserRepository userRepository;
 
     // Endpoint to partially update user details
-    @PatchMapping("/{id}")
+    @PostMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest updateUserRequest) {
         // Find the user by ID
