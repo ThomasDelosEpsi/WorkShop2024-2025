@@ -13,7 +13,17 @@ public class UpdateUserRequest {
     private Date birthDate;
     private Double weight;
     private Double height;
-    private Boolean firstConnexion; // Ajouter ce champ
+    private Boolean firstConnexion;
+    private String dailyExercises;
+    private String gender;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -77,5 +87,14 @@ public class UpdateUserRequest {
 
     public void setFirstConnexion(Boolean firstConnexion) {
         this.firstConnexion = firstConnexion;
+    }
+
+    // Getter et Setter pour dailyExercises
+    public String getDailyExercises() {
+        return dailyExercises;
+    }
+
+    public void setDailyExercises(String dailyExercises) {
+        this.dailyExercises = dailyExercises;
     }
 }

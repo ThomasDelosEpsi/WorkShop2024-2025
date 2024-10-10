@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'HomePage.dart';
+import 'introductionPage.dart';
 import 'subscribe.dart'; // Import SubscribePage
+
 
 class ConnexionPage extends StatefulWidget {
   const ConnexionPage({super.key});
@@ -41,12 +43,26 @@ class _ConnexionPageState extends State<ConnexionPage> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        final responseBody = json.decode(response.body);
+
+        bool firstConnexion = responseBody['first_connexion'];
+        String token = responseBody['token'];
+
+        if (firstConnexion) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => IntroductionPage(),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        }
       } else {
         final responseBody = json.decode(response.body);
         _showErrorDialog(responseBody['message'] ?? 'Erreur inconnue');
