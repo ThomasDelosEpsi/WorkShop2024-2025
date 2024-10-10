@@ -3,7 +3,6 @@ package com.bezkoder.springjwt.models;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -39,6 +38,8 @@ public class User {
   private Date birthDate;
   private double weight;
   private double height;
+  @Column(nullable = false)
+  private boolean firstConnexion;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
@@ -66,13 +67,16 @@ public class User {
   private Set<User> friends = new HashSet<>();
 
   // Constructeur vide
-  public User() {}
+  public User() {
+    this.firstConnexion = true; // Initialisation par défaut
+  }
 
   // Constructeur avec paramètres
   public User(String username, String email, String password) {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.firstConnexion = true; // Assurez-vous que firstConnexion est vrai lors de la création d'un utilisateur
   }
 
   // Getters et Setters
@@ -146,6 +150,14 @@ public class User {
 
   public void setHeight(double height) {
     this.height = height;
+  }
+
+  public boolean isFirstConnexion() {
+    return firstConnexion;
+  }
+
+  public void setFirstConnexion(boolean firstConnexion) {
+    this.firstConnexion = firstConnexion;
   }
 
   public Set<Role> getRoles() {

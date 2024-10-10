@@ -1,31 +1,20 @@
 package com.bezkoder.springjwt.payload.request;
 
-import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Date;
 
 public class UpdateUserRequest {
 
-    @Size(max = 20)
     private String firstName;
-
-    @Size(max = 20)
     private String lastName;
-
-    @Size(max = 50)
-    @Email
     private String email;
-
-    @Size(min = 6, max = 40)
     private String password;
-
     private Date birthDate;
-
     private Double weight;
-
     private Double height;
+    private Boolean firstConnexion; // Ajouter ce champ
 
-    // Getters and Setters
     public String getFirstName() {
         return firstName;
     }
@@ -80,5 +69,13 @@ public class UpdateUserRequest {
 
     public void setHeight(Double height) {
         this.height = height;
+    }
+
+    public Boolean getFirstConnexion() {
+        return firstConnexion;
+    }
+
+    public void setFirstConnexion(Boolean firstConnexion) {
+        this.firstConnexion = firstConnexion;
     }
 }

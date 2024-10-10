@@ -1,7 +1,8 @@
+import 'dart:convert'; // Pour la manipulation JSON
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http; // Importer http pour faire des requêtes
 import 'Connexion.dart'; // Import ConnexionPage for navigation back to login
-import 'introductionPage.dart'; // Import IntroductionPage for navigation
 
 class SubscribePage extends StatefulWidget {
   @override
@@ -27,6 +28,38 @@ class _SubscribePageState extends State<SubscribePage> {
     } else {
       setState(() {
         _errorMessage = null; // Clear error if they match
+      });
+    }
+  }
+
+  Future<void> _register() async {
+    if (_errorMessage != null) return; // Si un message d'erreur est présent, ne pas continuer
+
+    final response = await http.post(
+      Uri.parse('http://localhost:8080/api/auth/signup'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'username': _pseudoController.text,
+        'email': _emailController.text,
+        'password': _passwordController.text,
+        'role':["ROLE_USER"]
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ConnexionPage(),
+        ),
+      );
+    } else {
+      // Si l'inscription a échoué, afficher un message d'erreur
+      final Map<String, dynamic> responseData = jsonDecode(response.body);
+      setState(() {
+        _errorMessage = responseData['message'] ?? 'Une erreur est survenue';
       });
     }
   }
@@ -172,20 +205,7 @@ class _SubscribePageState extends State<SubscribePage> {
                       ),
                       onPressed: () {
                         _validatePassword();
-                        if (_errorMessage == null) {
-                          // Print the input data to the console
-                          print('Pseudo: ${_pseudoController.text}');
-                          print('Email: ${_emailController.text}');
-                          print('Password: ${_passwordController.text}');
-
-                          // Navigate to the IntroductionPage
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => IntroductionPage(),
-                            ),
-                          );
-                        }
+                        _register(); // Appel de la méthode pour enregistrer l'utilisateur
                       },
                       child: Text(
                         "S'inscrire",
