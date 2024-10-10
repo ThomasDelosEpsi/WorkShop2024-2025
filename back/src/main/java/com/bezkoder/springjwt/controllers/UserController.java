@@ -50,12 +50,43 @@ public class UserController {
         return ResponseEntity.ok(new MessageResponse("Body parts added successfully!"));
     }
 
-
     // Endpoint to remove BodyParts from a user
     @DeleteMapping("/{userId}/bodyparts")
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
     public ResponseEntity<?> removeBodyPartsFromUser(@PathVariable Long userId, @RequestBody BodyPartsRequest request) {
         userService.removeBodyPartsFromUser(userId, request.getBodyPartIds());
         return ResponseEntity.ok(new MessageResponse("BodyParts removed successfully!"));
+    }
+
+    // Endpoint to get friends of a user
+    @GetMapping("/{userId}/friends")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<Set<User>> getFriends(@PathVariable Long userId) {
+        Set<User> friends = userService.getFriendsByUserId(userId);
+        return ResponseEntity.ok(friends);
+    }
+
+    // Endpoint to add a friend
+    @PostMapping("/{userId}/friends/{friendId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<?> addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        userService.addFriend(userId, friendId);
+        return ResponseEntity.ok(new MessageResponse("Friend added successfully!"));
+    }
+
+    // Endpoint to remove a friend
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<?> removeFriend(@PathVariable Long userId, @PathVariable Long friendId) {
+        userService.removeFriend(userId, friendId);
+        return ResponseEntity.ok(new MessageResponse("Friend removed successfully!"));
+    }
+
+    // Endpoint to get a specific friend by ID
+    @GetMapping("/{userId}/friends/{friendId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER') or hasRole('KINE')")
+    public ResponseEntity<User> getFriendById(@PathVariable Long userId, @PathVariable Long friendId) {
+        User friend = userService.getFriendById(userId, friendId);
+        return ResponseEntity.ok(friend);
     }
 }

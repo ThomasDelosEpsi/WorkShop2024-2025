@@ -38,6 +38,75 @@ public class User {
   private String lastName;
   private Date birthDate;
   private double weight;
+  private double height;
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "user_roles",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private Set<Role> roles = new HashSet<>();
+
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "user_body_parts",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "body_part_id")
+  )
+  private Set<BodyPart> bodyParts = new HashSet<>();
+
+  // Many-to-Many relationship with other users
+  @ManyToMany(fetch = FetchType.LAZY)
+  @JoinTable(
+          name = "user_friends",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "friend_id")
+  )
+  private Set<User> friends = new HashSet<>();
+
+  // Constructeur vide
+  public User() {}
+
+  // Constructeur avec paramètres
+  public User(String username, String email, String password) {
+    this.username = username;
+    this.email = email;
+    this.password = password;
+  }
+
+  // Getters et Setters
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
   public String getFirstName() {
     return firstName;
@@ -79,67 +148,6 @@ public class User {
     this.height = height;
   }
 
-  private double height;
-
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-          name = "user_roles",
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "role_id")
-  )
-  private Set<Role> roles = new HashSet<>();
-
-  // Ajoutez ici la relation Many-to-Many avec BodyPart
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-          name = "user_body_parts", // Le nom de la table de jointure
-          joinColumns = @JoinColumn(name = "user_id"),
-          inverseJoinColumns = @JoinColumn(name = "body_part_id")
-  )
-  private Set<BodyPart> bodyParts = new HashSet<>();
-
-  public User() {}
-
-  public User(String username, String email, String password) {
-    this.username = username;
-    this.email = email;
-    this.password = password;
-  }
-
-  // Getters et Setters
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
   public Set<Role> getRoles() {
     return roles;
   }
@@ -154,5 +162,13 @@ public class User {
 
   public void setBodyParts(Set<BodyPart> bodyParts) {
     this.bodyParts = bodyParts;
+  }
+
+  public Set<User> getFriends() {
+    return friends;
+  }
+
+  public void setFriends(Set<User> friends) {
+    this.friends = friends;
   }
 }
