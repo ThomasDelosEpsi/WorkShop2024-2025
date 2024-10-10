@@ -51,9 +51,11 @@ class _ConnexionPageState extends State<ConnexionPage> {
         if (responseBody.containsKey('accessToken') && responseBody['accessToken'] != null) {
           String token = responseBody['accessToken'];
           String username = responseBody['username'];
+          List<String> roles = (responseBody['roles'] as List<dynamic>).map((role) => role.toString()).toList();
           // Stocker le token dans le TokenProvider
           Provider.of<TokenProvider>(context, listen: false).setToken(token);
           Provider.of<TokenProvider>(context, listen: false).setUsername(username);
+          Provider.of<TokenProvider>(context, listen: false).setRoles(roles);
 
           // Naviguer vers HomePage
           Navigator.pushReplacement(

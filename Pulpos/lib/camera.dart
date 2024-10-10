@@ -1,8 +1,12 @@
+// camera.dart
+import 'dart:async';
+
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
-import 'dart:async';
-import 'dart:html' as html;
+
+// Utilisation d'import conditionnel pour télécharger la vidéo selon la plateforme
+import 'camera_web.dart' if (dart.library.io) 'camera_mobile.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
@@ -38,7 +42,7 @@ class _CameraPageState extends State<CameraPage> {
         setState(() {});
       }
     } catch (e) {
-      print('Error initializing camera: $e');
+      print('Erreur lors de l\'initialisation de la caméra : $e');
     }
   }
 
@@ -53,15 +57,13 @@ class _CameraPageState extends State<CameraPage> {
     if (!_cameraController!.value.isRecordingVideo) {
       try {
         await _cameraController!.startVideoRecording();
-
         setState(() {
           _isRecording = true;
           _recordDuration = 0;
         });
-
         _startTimer();
       } catch (e) {
-        print('Error starting video recording: $e');
+        print('Erreur lors du démarrage de l\'enregistrement vidéo : $e');
       }
     }
   }
@@ -77,24 +79,14 @@ class _CameraPageState extends State<CameraPage> {
           _videoPath = videoFile.path;
         });
 
-        if (kIsWeb) {
-          _downloadVideoFile(videoFile);
-        }
+        // Télécharger la vidéo (fonction définie dans camera_web.dart ou camera_mobile.dart)
+        downloadVideoFile(videoFile);
 
-        print('Video recorded to: $_videoPath');
+        print('Vidéo enregistrée à : $_videoPath');
       } catch (e) {
-        print('Error stopping video recording: $e');
+        print('Erreur lors de l\'arrêt de l\'enregistrement vidéo : $e');
       }
     }
-  }
-
-  void _downloadVideoFile(XFile videoFile) async {
-    final blob = html.Blob([await videoFile.readAsBytes()], 'video/mp4');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute('download', 'video_${DateTime.now().millisecondsSinceEpoch}.mp4')
-      ..click();
-    html.Url.revokeObjectUrl(url);
   }
 
   void _startTimer() {
@@ -122,7 +114,6 @@ class _CameraPageState extends State<CameraPage> {
             child: CameraPreview(_cameraController!),
           )
               : const Center(child: CircularProgressIndicator()),
-          // Back button
           Positioned(
             top: 40,
             left: 16,
@@ -133,7 +124,6 @@ class _CameraPageState extends State<CameraPage> {
               },
             ),
           ),
-          // User profile image
           Positioned(
             top: 40,
             right: 16,
@@ -142,7 +132,7 @@ class _CameraPageState extends State<CameraPage> {
               backgroundColor: const Color(0xFF10FD91),
               child: ClipOval(
                 child: Image.asset(
-                  '../assets/logopulpos.png', // Chemin vers votre image
+                  '../assets/logopulpos.png',
                   fit: BoxFit.cover,
                   width: 40,
                   height: 40,
@@ -150,7 +140,6 @@ class _CameraPageState extends State<CameraPage> {
               ),
             ),
           ),
-          // Capture button and timer
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
