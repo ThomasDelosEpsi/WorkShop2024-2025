@@ -4,8 +4,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'HomePage.dart';
+import 'introductionPage.dart';
 import 'subscribe.dart'; // Import SubscribePage
 import 'token_provider.dart'; // Import TokenProvider
+
 
 class ConnexionPage extends StatefulWidget {
   const ConnexionPage({super.key});

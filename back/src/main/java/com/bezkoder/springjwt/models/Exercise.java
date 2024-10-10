@@ -8,6 +8,7 @@ public class Exercise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idExercise")
     private Long id;
 
     @Column(nullable = false)
@@ -16,19 +17,22 @@ public class Exercise {
     @Column(name = "url_video", nullable = false)
     private String urlVideo;
 
-    @ManyToOne(fetch = FetchType.LAZY)  // Keep lazy loading for BodyPart
-    @JoinColumn(name = "body_part_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idUser", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idBodyPart", nullable = false)
     private BodyPart bodyPart;
 
     public Exercise() {}
 
-    public Exercise(String name, String urlVideo, BodyPart bodyPart) {
+    public Exercise(String name, String urlVideo, User user, BodyPart bodyPart) {
         this.name = name;
         this.urlVideo = urlVideo;
+        this.user = user;
         this.bodyPart = bodyPart;
     }
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -52,6 +56,14 @@ public class Exercise {
 
     public void setUrlVideo(String urlVideo) {
         this.urlVideo = urlVideo;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public BodyPart getBodyPart() {

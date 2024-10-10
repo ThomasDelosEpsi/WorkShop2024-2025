@@ -8,6 +8,7 @@ import com.bezkoder.springjwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time; // Importer le type Time
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -31,7 +32,9 @@ public class UserService {
             if (request.getBirthDate() != null) user.setBirthDate(request.getBirthDate());
             if (request.getWeight() != null) user.setWeight(request.getWeight());
             if (request.getHeight() != null) user.setHeight(request.getHeight());
-            if (request.getFirstConnexion() != null) user.setFirstConnexion(request.getFirstConnexion()); // Gérer firstConnexion
+            if (request.getFirstConnexion() != null) user.setFirstConnexion(request.getFirstConnexion());
+            if (request.getDailyExercises() != null) {user.setDailyExercises(Time.valueOf(request.getDailyExercises()));}
+            if (request.getGender() != null) user.setGender(request.getGender());
             return userRepository.save(user);
         });
     }

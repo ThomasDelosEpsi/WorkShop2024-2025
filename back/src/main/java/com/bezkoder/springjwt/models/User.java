@@ -1,5 +1,6 @@
 package com.bezkoder.springjwt.models;
 
+import java.sql.Time; // Importer le type Time
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,8 +39,14 @@ public class User {
   private Date birthDate;
   private double weight;
   private double height;
+
+  private String gender;
+
   @Column(nullable = false)
   private boolean firstConnexion;
+
+  @Column(name = "daily_exercises") // Nom de la colonne dans la base de données
+  private Time dailyExercises; // Champ pour l'heure des exercices quotidiens
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
@@ -152,12 +159,28 @@ public class User {
     this.height = height;
   }
 
+  public String getGender() {
+    return gender; // Getter pour le genre
+  }
+
+  public void setGender(String gender) {
+    this.gender = gender; // Setter pour le genre
+  }
+
   public boolean isFirstConnexion() {
     return firstConnexion;
   }
 
   public void setFirstConnexion(boolean firstConnexion) {
     this.firstConnexion = firstConnexion;
+  }
+
+  public Time getDailyExercises() {
+    return dailyExercises; // Getter pour l'heure des exercices quotidiens
+  }
+
+  public void setDailyExercises(Time dailyExercises) {
+    this.dailyExercises = dailyExercises; // Setter pour l'heure des exercices quotidiens
   }
 
   public Set<Role> getRoles() {
