@@ -1,10 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'camera.dart'; // Import the CameraPage
-import 'HomePage.dart'; // Import the HomePage
+import 'package:image_picker/image_picker.dart';
+import 'AvatarCreationPage.dart'; // Import the AvatarCreationPage
 
 class ProfilsPage extends StatelessWidget {
-  const ProfilsPage({super.key});
+  final String username;
+  final String avatarPath;
+  final ValueChanged<String> onAvatarChanged;
+
+  const ProfilsPage({
+    super.key,
+    required this.username,
+    required this.avatarPath,
+    required this.onAvatarChanged,
+  });
+
+  // Function to change the avatar
+  Future<void> _changeAvatar(BuildContext context) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Wrap(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text('Choisir depuis la galerie'),
+              onTap: () async {
+                Navigator.pop(context);
+                final picker = ImagePicker();
+                final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+                if (pickedFile != null) {
+                  onAvatarChanged(pickedFile.path);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.create),
+              title: const Text('Créer un avatar personnalisé'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AvatarCreationPage(
+                      onAvatarCreated: (newAvatarPath) {
+                        onAvatarChanged(newAvatarPath);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +88,7 @@ class ProfilsPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // Handle settings action
+              // Settings action
             },
           ),
         ],
@@ -46,137 +98,103 @@ class ProfilsPage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              // Profile picture
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: const Color(0xFF10FD91),
-                child: Image.asset(
-                  '../assets/logopulpos.png',
-                  fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () => _changeAvatar(context),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: const Color(0xFF10FD91),
+                  backgroundImage: AssetImage(avatarPath),
                 ),
               ),
               const SizedBox(height: 8),
-              // Username
-              const Text(
-                "GUS",
-                style: TextStyle(
+              Text(
+                username,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
               const SizedBox(height: 16),
-              // Health section
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Votre santé",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Health details
-                    _buildHealthItem("Activité sportive", "À compléter"),
-                    const Divider(),
-                    _buildHealthItem("État de douleur", "Récurrent"),
+                    _buildProfileInfoRow("Votre santé", "À compléter"),
+                    _buildProfileInfoRow("Zone de douleur", "Aucune"),
+                    const SizedBox(height: 16),
+                    _buildProfileStatsRow("Programmes en cours", "2"),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
-              // Statistics section
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Statistiques",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Statistics details
-                    _buildHealthItem("Programmes en cours", "2"),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
             ],
           ),
         ),
       ),
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 3, // Set the current index to profile
-        onTap: (index) {
-          if (index == 0) {
-            // Navigate to HomePage
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          } else if (index == 1) {
-            // Navigate to CameraPage
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CameraPage()),
-            );
-          }
-          // Add any other navigation logic here if needed
-        },
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: ''),
+    );
+  }
+
+  // Helper widget to build profile information rows
+  Widget _buildProfileInfoRow(String title, String value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black54,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildHealthItem(String title, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: GoogleFonts.roboto(
-            fontSize: 16,
-            color: Colors.black,
+  // Helper widget to build profile statistics rows
+  Widget _buildProfileStatsRow(String title, String value) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black54,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.roboto(
-            fontSize: 16,
-            color: const Color(0xFF10FD91),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

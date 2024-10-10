@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-// Pour afficher les SVG
-import 'connexion.dart';// Importez le fichier contenant la page d'accueil
+import 'package:provider/provider.dart';
+import 'connexion.dart'; // Importez le fichier contenant la page de connexion
+import 'token_provider.dart'; // Importez le fichier du TokenProvider
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => TokenProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -28,9 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Attendre x secondes avant de passer à la page principale
+    // Attendre 2 secondes avant de passer à la page de connexion
     Future.delayed(const Duration(seconds: 2), () {
-      // Naviguer vers HomePage et remplacer l'écran actuel
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const ConnexionPage()),
@@ -44,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: const Color(0xFF8245E6), // Couleur de fond violet
       body: Center(
         child: Image.asset(
-          '../assets/logoWhite.png', // Chemin vers votre logo SVG
+          '../assets/logoWhite.png', // Chemin vers votre logo
           width: 181, // Largeur ajustée
           height: 60, // Hauteur ajustée
         ),

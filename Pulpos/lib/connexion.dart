@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'HomePage.dart';
 import 'subscribe.dart'; // Import SubscribePage
+import 'token_provider.dart'; // Import TokenProvider
 
 class ConnexionPage extends StatefulWidget {
   const ConnexionPage({super.key});
@@ -41,12 +43,25 @@ class _ConnexionPageState extends State<ConnexionPage> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(),
-          ),
-        );
+        final responseBody = json.decode(response.body);
+
+        // Vérifiez que le champ 'token' est bien présent
+        if (responseBody.containsKey('accessToken') && responseBody['accessToken'] != null) {
+          String token = responseBody['accessToken'];
+          String username = responseBody['username'];
+          // Stocker le token dans le TokenProvider
+          Provider.of<TokenProvider>(context, listen: false).setToken(token);
+          Provider.of<TokenProvider>(context, listen: false).setUsername(username);
+
+          // Naviguer vers HomePage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        } else {
+          // Le champ 'token' est absent ou null
+          _showErrorDialog('La réponse de l\'API ne contient pas de jeton valide.');
+        }
       } else {
         final responseBody = json.decode(response.body);
         _showErrorDialog(responseBody['message'] ?? 'Erreur inconnue');
@@ -95,7 +110,6 @@ class _ConnexionPageState extends State<ConnexionPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Email field
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -104,16 +118,15 @@ class _ConnexionPageState extends State<ConnexionPage> {
                       hintText: 'Adresse mail',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)), // Green when focused
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white), // White when not focused
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
-                  // Password field
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -123,10 +136,10 @@ class _ConnexionPageState extends State<ConnexionPage> {
                       hintText: 'Mot de passe',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                       focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFF11FD91)), // Green when focused
+                        borderSide: BorderSide(color: Color(0xFF11FD91)),
                       ),
                       enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white), // White when not focused
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -143,7 +156,6 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 24),
-                  // Login button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -166,7 +178,6 @@ class _ConnexionPageState extends State<ConnexionPage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Navigate to SubscribePage
                   TextButton(
                     onPressed: () {
                       Navigator.push(

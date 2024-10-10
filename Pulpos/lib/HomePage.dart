@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pulpos/message.dart';
 import 'camera.dart'; // Import the CameraPage
 import 'program.dart'; // Import the ProgramDetailPage
 import 'profils.dart'; // Import the ProfilsPage
+import 'token_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +20,7 @@ class _HomePageState extends State<HomePage> {
       subtitle: "Programme de la semaine",
       rating: 4.8,
       image: "../assets/MalDeDos.png",
-      description: "Le mal de dos est l'un des maux les plus répandus, touchant des millions de personnes au quotidien. Que vous souffriez de douleurs chroniques ou passagères, notre programme en 6 séances est conçu pour vous aider à soulager et prévenir les douleurs.",
+      description: "Le mal de dos est l'un des maux les plus répandus...",
       sessions: 6,
     ),
     Program(
@@ -25,13 +28,14 @@ class _HomePageState extends State<HomePage> {
       subtitle: "Programme personnalisé",
       rating: 4.5,
       image: "../assets/MalDeDos.png",
-      description: "Ce programme est conçu pour aider à traiter les périostites, avec des exercices et des conseils personnalisés adaptés à votre condition.",
+      description: "Ce programme est conçu pour aider à traiter les périostites...",
       sessions: 4,
     ),
   ];
 
   int _currentIndex = 0;
   int _selectedFilterIndex = 0;
+  String _avatarPath = "../assets/logopulpos.png"; // Default avatar
 
   void _onItemTapped(int index) {
     if (index == 1) {
@@ -39,10 +43,21 @@ class _HomePageState extends State<HomePage> {
         context,
         MaterialPageRoute(builder: (context) => const CameraPage()),
       );
+    } else if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const MessagePage()),
+      );
     } else if (index == 3) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const ProfilsPage()),
+        MaterialPageRoute(
+          builder: (context) => ProfilsPage(
+            username: Provider.of<TokenProvider>(context, listen: false).username,
+            avatarPath: _avatarPath,
+            onAvatarChanged: _updateAvatar,
+          ),
+        ),
       );
     } else {
       setState(() {
@@ -60,12 +75,27 @@ class _HomePageState extends State<HomePage> {
   void _navigateToProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ProfilsPage()),
+      MaterialPageRoute(
+        builder: (context) => ProfilsPage(
+          username: Provider.of<TokenProvider>(context, listen: false).username,
+          avatarPath: _avatarPath,
+          onAvatarChanged: _updateAvatar,
+        ),
+      ),
     );
+  }
+
+  void _updateAvatar(String newAvatarPath) {
+    setState(() {
+      _avatarPath = newAvatarPath;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Retrieve the username from the TokenProvider
+    final username = Provider.of<TokenProvider>(context).username;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -78,17 +108,17 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Hey, Gus ",
-                          style: TextStyle(
+                          text: "Hey, $username ",
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           ),
                         ),
-                        TextSpan(
+                        const TextSpan(
                           text: "👋",
                           style: TextStyle(
                             fontSize: 24,
@@ -99,52 +129,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: _navigateToProfile, // Navigate to profile when the logo is clicked
+                    onTap: _navigateToProfile,
                     child: CircleAvatar(
                       radius: 24,
                       backgroundColor: const Color(0xFF10FD91),
-                      child: Image.asset(
-                        "../assets/logopulpos.png",
-                        fit: BoxFit.cover,
-                      ),
+                      backgroundImage: AssetImage(_avatarPath),
                     ),
                   ),
                 ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: Container(
-                width: 374,
-                height: 58,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: Colors.grey),
-                ),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 20.0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Recherche un programme',
-                          ),
-                        ),
-                      ),
-                    ),
-                    const VerticalDivider(
-                      color: Colors.grey,
-                      width: 1,
-                      thickness: 1,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.filter_list),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -240,7 +232,7 @@ class _HomePageState extends State<HomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.camera_alt_outlined), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.message_outlined), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: ''),
         ],
       ),
@@ -254,7 +246,12 @@ class FilterButton extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const FilterButton({super.key, required this.label, required this.isSelected, required this.onTap});
+  const FilterButton({
+    super.key,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -382,7 +379,6 @@ class _ProgramCardState extends State<ProgramCard> {
               ),
             ),
           ),
-          // Heart icon at the top right corner
           Positioned(
             top: 8,
             right: 8,
