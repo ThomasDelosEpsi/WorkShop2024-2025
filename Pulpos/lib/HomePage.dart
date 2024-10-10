@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'camera.dart'; // Import the CameraPage
 import 'program.dart'; // Import the ProgramDetailPage
+import 'profils.dart'; // Import the ProfilsPage
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,23 +28,40 @@ class _HomePageState extends State<HomePage> {
       description: "Ce programme est conçu pour aider à traiter les périostites, avec des exercices et des conseils personnalisés adaptés à votre condition.",
       sessions: 4,
     ),
-    // Add more programs here if needed
   ];
 
-  int _currentIndex = 0; // State for the bottom navigation bar
+  int _currentIndex = 0;
+  int _selectedFilterIndex = 0;
 
   void _onItemTapped(int index) {
     if (index == 1) {
-      // Navigate to CameraPage if the camera icon is clicked
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const CameraPage()),
+      );
+    } else if (index == 3) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfilsPage()),
       );
     } else {
       setState(() {
         _currentIndex = index;
       });
     }
+  }
+
+  void _onFilterTapped(int index) {
+    setState(() {
+      _selectedFilterIndex = index;
+    });
+  }
+
+  void _navigateToProfile() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const ProfilsPage()),
+    );
   }
 
   @override
@@ -54,7 +72,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header and search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
@@ -81,15 +98,15 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: const Color(0xFF10FD91),
-                    child: IconButton(
-                      icon: Image.asset(
+                  GestureDetector(
+                    onTap: _navigateToProfile, // Navigate to profile when the logo is clicked
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: const Color(0xFF10FD91),
+                      child: Image.asset(
                         "../assets/logopulpos.png",
                         fit: BoxFit.cover,
                       ),
-                      onPressed: () {},
                     ),
                   ),
                 ],
@@ -154,7 +171,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 8),
-            // Filter buttons remain unchanged
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -162,43 +178,30 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: FilterButton(
                       label: "+ Vue",
-                      isSelected: _currentIndex == 0,
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = 0;
-                        });
-                      },
+                      isSelected: _selectedFilterIndex == 0,
+                      onTap: () => _onFilterTapped(0),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: FilterButton(
                       label: "Rapide",
-                      isSelected: _currentIndex == 1,
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = 1;
-                        });
-                      },
+                      isSelected: _selectedFilterIndex == 1,
+                      onTap: () => _onFilterTapped(1),
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: FilterButton(
                       label: "Dernier",
-                      isSelected: _currentIndex == 2,
-                      onTap: () {
-                        setState(() {
-                          _currentIndex = 2;
-                        });
-                      },
+                      isSelected: _selectedFilterIndex == 2,
+                      onTap: () => _onFilterTapped(2),
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            // Display the programs dynamically
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
