@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pulpos/AddProgramPage.dart';
+import 'exerciceIA.dart';
+import 'detailProgramIA.dart';
 
 class ProgramPage extends StatefulWidget {
   const ProgramPage({Key? key}) : super(key: key);
@@ -13,21 +15,38 @@ class _ProgramPageState extends State<ProgramPage> {
     {
       "title": "Rééducation du dos",
       "description": "Un programme ciblé pour renforcer le dos et améliorer la posture.",
-      "image": "../assets/dos.png", // Assurez-vous que le chemin de l'image est correct
+      "image": "../assets/dos.png",
+      "source": "manuel",
     },
     {
       "title": "Rééducation du genou",
       "description": "Exercices pour renforcer les muscles autour du genou et améliorer la mobilité.",
       "image": "../assets/genou.png",
+      "source": "manuel",
     },
     {
       "title": "Rééducation des épaules",
       "description": "Un programme pour améliorer la flexibilité et la force des épaules.",
       "image": "../assets/epaule.png",
+      "source": "manuel",
     },
   ];
 
   String _searchQuery = "";
+
+  void _addGeneratedProgram(String title, String content) {
+    // Extraire la première phrase du contenu comme description
+    final firstSentence = content.split('.').first + '.';
+    setState(() {
+      programs.add({
+        "title": title,
+        "description": firstSentence,
+        "content": content,
+        "image": "ia", // Utilisé pour indiquer que le programme est généré par l'IA
+        "source": "ia"
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +91,7 @@ class _ProgramPageState extends State<ProgramPage> {
                     // Action pour le bouton Filtrer
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white, // Fond blanc
+                    backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -80,8 +99,8 @@ class _ProgramPageState extends State<ProgramPage> {
                   child: const Text(
                     "Filtrer",
                     style: TextStyle(
-                      color: Color(0xFF8245E6), // Texte en violet
-                      fontWeight: FontWeight.bold, // Texte en gras
+                      color: Color(0xFF8245E6),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -94,7 +113,7 @@ class _ProgramPageState extends State<ProgramPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF8245E6), // Fond violet
+                    backgroundColor: const Color(0xFF8245E6),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -102,19 +121,26 @@ class _ProgramPageState extends State<ProgramPage> {
                   child: const Text(
                     "Créer un programme",
                     style: TextStyle(
-                      color: Colors.white, // Texte en blanc
-                      fontWeight: FontWeight.bold, // Texte en gras
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () {
-                    // Action pour le bouton IA
-                    // Ici, vous pouvez ajouter la logique pour ce bouton
+                  onPressed: () async {
+                    // Navigue vers la page ExercicesIAPage et récupère le programme généré par l'IA
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ExercicesIAPage()),
+                    );
+
+                    if (result != null && result is Map<String, String>) {
+                      _addGeneratedProgram(result['title']!, result['content']!);
+                    }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50), // Fond vert
+                    backgroundColor: const Color(0xFF4CAF50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -122,8 +148,8 @@ class _ProgramPageState extends State<ProgramPage> {
                   child: const Text(
                     "IA",
                     style: TextStyle(
-                      color: Colors.white, // Texte en blanc
-                      fontWeight: FontWeight.bold, // Texte en gras
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -137,10 +163,13 @@ class _ProgramPageState extends State<ProgramPage> {
                 itemCount: filteredPrograms.length,
                 itemBuilder: (context, index) {
                   final program = filteredPrograms[index];
+                  final isGeneratedByIA = program['source'] == 'ia';
                   return Card(
                     margin: const EdgeInsets.only(bottom: 16),
                     child: ListTile(
-                      leading: Image.asset(
+                      leading: isGeneratedByIA
+                          ? const Icon(Icons.smart_toy, size: 50, color: Colors.blue)
+                          : Image.asset(
                         program['image']!,
                         width: 50,
                         height: 50,
@@ -150,7 +179,15 @@ class _ProgramPageState extends State<ProgramPage> {
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Text(program['description']!),
                       onTap: () {
-                        // Action lorsque l'utilisateur clique sur un programme
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailProgramIAPage(
+                              title: program['title']!,
+                              content: program['content']!,
+                            ),
+                          ),
+                        );
                       },
                     ),
                   );
