@@ -48,8 +48,8 @@ class _ConnexionPageState extends State<ConnexionPage> {
         final responseBody = json.decode(response.body);
 
         // Vérifiez que le champ 'token' est bien présent
-        if (responseBody.containsKey('accessToken') && responseBody['accessToken'] != null) {
-          String token = responseBody['accessToken'];
+        if (responseBody.containsKey('token') && responseBody['token'] != null) {
+          String token = responseBody['token'];
           String username = responseBody['username'];
           List<String> roles = (responseBody['roles'] as List<dynamic>).map((role) => role.toString()).toList();
           // Stocker le token dans le TokenProvider
