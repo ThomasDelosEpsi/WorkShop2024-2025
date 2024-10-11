@@ -117,9 +117,9 @@ class _ConnexionPageState extends State<ConnexionPage> {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      labelText: 'Adresse mail',
+                      labelText: 'Nom d\'utilisateur',
                       labelStyle: const TextStyle(color: Colors.white),
-                      hintText: 'Adresse mail',
+                      hintText: 'Nom d\'utilisateur',
                       hintStyle: TextStyle(color: Colors.white.withOpacity(0.6)),
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFF11FD91)),

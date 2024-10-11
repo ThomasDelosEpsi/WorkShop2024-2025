@@ -15,25 +15,26 @@ class _SubscribePageState extends State<SubscribePage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
-  bool _isPasswordVisible = false; // For toggling password visibility
-  bool _isConfirmPasswordVisible = false; // For toggling confirm password visibility
-  String? _errorMessage; // Error message for password mismatch
+  bool _isPasswordVisible = false; // Pour basculer la visibilité du mot de passe
+  bool _isConfirmPasswordVisible = false; // Pour basculer la visibilité de la confirmation du mot de passe
+  String? _errorMessage; // Message d'erreur pour le non-correspondance des mots de passe
+  bool _isTermsAccepted = false; // Variable pour suivre l'acceptation des termes
 
   void _validatePassword() {
-    // Check if password and confirmation match
+    // Vérifier si le mot de passe et la confirmation correspondent
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
         _errorMessage = 'Le mot de passe et la confirmation ne sont pas identiques';
       });
     } else {
       setState(() {
-        _errorMessage = null; // Clear error if they match
+        _errorMessage = null; // Effacer l'erreur si les mots de passe correspondent
       });
     }
   }
 
   Future<void> _register() async {
-    if (_errorMessage != null) return; // Si un message d'erreur est présent, ne pas continuer
+    if (_errorMessage != null || !_isTermsAccepted) return; // Si un message d'erreur est présent ou si les termes ne sont pas acceptés, ne pas continuer
 
     final response = await http.post(
       Uri.parse('http://localhost:8080/api/auth/signup'),
@@ -44,7 +45,7 @@ class _SubscribePageState extends State<SubscribePage> {
         'username': _pseudoController.text,
         'email': _emailController.text,
         'password': _passwordController.text,
-        'role':["ROLE_USER"]
+        'role': ["ROLE_USER"]
       }),
     );
 
@@ -64,30 +65,200 @@ class _SubscribePageState extends State<SubscribePage> {
     }
   }
 
+  // Méthode pour afficher le pop-up avec les conditions d'utilisation
+  void _showTermsDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Conditions Générales d'Utilisation"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text("Voici les conditions générales d'utilisation concernant la collecte et le traitement de vos données :"),
+                const SizedBox(height: 16),
+                DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Type de données')),
+                    DataColumn(label: Text('Détails collectés')),
+                    DataColumn(label: Text('Méthode de stockage')),
+                    DataColumn(label: Text('Sécurisation')),
+                    DataColumn(label: Text('Durée de conservation')),
+                  ],
+                  rows: const [
+                    DataRow(cells: [
+                      DataCell(Text('Données personnelles')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Nom et prénom')),
+                      DataCell(Text('Informations de base du profil utilisateur')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement (au repos et en transit via HTTPS)')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Adresse e-mail')),
+                      DataCell(Text('Utilisée pour l’identification et la communication')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Numéro de téléphone')),
+                      DataCell(Text('Facultatif, pour les notifications')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Mot de passe')),
+                      DataCell(Text('Authentification des utilisateurs')),
+                      DataCell(Text('Stocké sous forme hachée')),
+                      DataCell(Text('Hachage sécurisé (bcrypt)')),
+                      DataCell(Text('Tant que le compte est actif')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Données de santé')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Antécédents médicaux')),
+                      DataCell(Text('Pathologies, maladies chroniques, etc.')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement, accès uniquement pour les praticiens')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Symptômes')),
+                      DataCell(Text('Douleurs, intensité, localisation, durée')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement, accès restreint aux praticiens')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Programme de rééducation')),
+                      DataCell(Text('Programme d’exercices personnalisé généré par l’IA')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement, accès pour praticiens et patients')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Historique des consultations')),
+                      DataCell(Text('Notes et rapports des consultations')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement, accès restreint aux praticiens')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Messages privés')),
+                      DataCell(Text('Échanges entre les patients et les praticiens')),
+                      DataCell(Text('Stockés sur des serveurs sécurisés')),
+                      DataCell(Text('Chiffrement, accès restreint aux participants')),
+                      DataCell(Text('Jusqu\'à la suppression du compte ou après 2 ans d\'inactivité')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Données d\'usage')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Type d’appareil')),
+                      DataCell(Text('Modèle de téléphone, version de l’OS (iOS, Android)')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Anonymisation si non nécessaire')),
+                      DataCell(Text('2 ans après l\'inactivité de l\'utilisateur')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Données d\'actions')),
+                      DataCell(Text('Actions dans l’application (ex. progression des exercices)')),
+                      DataCell(Text('Stockées sur des serveurs sécurisés')),
+                      DataCell(Text('Anonymisation pour analyse statistique')),
+                      DataCell(Text('2 ans après l\'inactivité de l\'utilisateur')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Données de paiement')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                      DataCell(Text('')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Abonnement (via Stripe)')),
+                      DataCell(Text('Type d’abonnement choisi, statut de paiement')),
+                      DataCell(Text('Stockées par Stripe (référence sur vos serveurs)')),
+                      DataCell(Text('Stripe conforme à la norme PCI-DSS (chiffrement, gestion de la sécurité)')),
+                      DataCell(Text('Tant que l’abonnement est actif ou selon les obligations légales (10 ans pour les factures en France)')),
+                    ]),
+                    DataRow(cells: [
+                      DataCell(Text('Informations de carte bancaire')),
+                      DataCell(Text('Numéro de carte, date d\'expiration, code CVV')),
+                      DataCell(Text('Non stockées directement par l\'application (gérées par Stripe)')),
+                      DataCell(Text('Stripe conforme à PCI-DSS (chiffrement)')),
+                      DataCell(Text('Non applicable (géré par Stripe uniquement)')),
+                    ]),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "Nous avons besoin de ces données pour plusieurs raisons :\n"
+                      "- Fournir un service personnalisé et adapté à vos besoins.\n"
+                      "- Assurer la sécurité de votre compte et de vos informations.\n"
+                      "- Faciliter la communication et l'identification de votre compte.\n"
+                      "- Analyser et améliorer nos services en fonction de votre utilisation.\n"
+                      "- Respecter nos obligations légales et réglementaires.\n"
+                      "Votre confiance est essentielle, et nous nous engageons à protéger vos informations personnelles.",
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Fermer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF8245E6), // Purple background
+      backgroundColor: const Color(0xFF8245E6), // Fond violet
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Top logo
+            // Logo en haut
             Padding(
               padding: const EdgeInsets.only(top: 32.0),
               child: Image.asset(
-                '../assets/logoWhite.png', // Replace with your actual logo path
+                '../assets/logoWhite.png', // Remplacez par votre chemin d'accès au logo
                 width: 120,
                 height: 120,
               ),
             ),
-            // Form fields and button
+            // Champs du formulaire et bouton
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Pseudo field
+                  // Champ pseudo
                   TextFormField(
                     controller: _pseudoController,
                     decoration: InputDecoration(
@@ -105,7 +276,7 @@ class _SubscribePageState extends State<SubscribePage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
-                  // Email field
+                  // Champ email
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -123,7 +294,7 @@ class _SubscribePageState extends State<SubscribePage> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 16),
-                  // Password field
+                  // Champ mot de passe
                   TextFormField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -154,7 +325,7 @@ class _SubscribePageState extends State<SubscribePage> {
                     onChanged: (value) => _validatePassword(),
                   ),
                   const SizedBox(height: 16),
-                  // Confirm password field
+                  // Champ de confirmation de mot de passe
                   TextFormField(
                     controller: _confirmPasswordController,
                     obscureText: !_isConfirmPasswordVisible,
@@ -185,14 +356,38 @@ class _SubscribePageState extends State<SubscribePage> {
                     onChanged: (value) => _validatePassword(),
                   ),
                   const SizedBox(height: 8),
-                  // Error message
+                  // Message d'erreur
                   if (_errorMessage != null)
                     Text(
                       _errorMessage!,
                       style: TextStyle(color: Colors.red, fontSize: 14),
                     ),
                   const SizedBox(height: 16),
-                  // Subscribe button
+                  // Case à cocher pour accepter les conditions d'utilisation
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _isTermsAccepted,
+                        onChanged: (value) {
+                          setState(() {
+                            _isTermsAccepted = value!;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: _showTermsDialog,
+                        child: Text(
+                          "J'accepte les conditions générales d'utilisation",
+                          style: TextStyle(
+                            color: Colors.white,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Bouton d'inscription
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -218,7 +413,7 @@ class _SubscribePageState extends State<SubscribePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Already have an account? Sign in
+                  // Déjà un compte ? Se connecter
                   TextButton(
                     onPressed: () {
                       Navigator.push(
@@ -239,11 +434,11 @@ class _SubscribePageState extends State<SubscribePage> {
                 ],
               ),
             ),
-            // Bottom logo
+            // Logo en bas
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: Image.asset(
-                '../assets/logopulpos.png', // Replace with your actual logo path
+                '../assets/logopulpos.png', // Remplacez par votre chemin d'accès au logo
                 width: 80,
                 height: 80,
               ),
